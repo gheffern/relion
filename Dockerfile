@@ -15,19 +15,19 @@ RUN apt-get update \
        vim \
   && apt-get clean \
   && useradd -ms /bin/bash relion \
-  && mkdir -p /opt/relion \
-  && chown relion:relion /opt/relion
-
-USER relion
-WORKDIR /opt/relion
-
-RUN git clone  https://github.com/3dem/relion.git . \
+  && mkdir -p /opt/relion_build/ /opt/relion/\
+  && chown relion:relion /opt/relion \
+  && su relion \
+  && cd /opt/relion_build \
+  && git clone  https://github.com/3dem/relion.git . \
   && sed -i '218,222d' CMakeLists.txt \
   && mkdir build \
   && cd build \
   && export CXX=mpicxx \
-  && cmake -DGUI=OFF .. \
+  && cmake -DGUI=OFF -DCMAKE_INSTALL_PREFIX=/opt/relion/ .. \
   && export cpu_count=$(lscpu -p | grep -v '#' | wc -l) \
-  && make -j $cpu_count
-
+  && make -j $cpu_count \
+  && make install
+USER relion
+WORKDIR /opt/relion
 
