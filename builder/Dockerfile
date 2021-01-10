@@ -1,23 +1,15 @@
-FROM debian:bullseye-slim
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update \
-  && apt-get install -y \
+FROM relion_base:latest AS builder
+RUN apt-get install -y \
        build-essential \
        cmake \
        git \
        libfftw3-dev \
        libtiff-dev \
        libpng-dev \
-       mpi-default-bin \
        mpi-default-dev \
-       vim \
   && apt-get clean \
-  && useradd -ms /bin/bash relion \
-  && mkdir -p /opt/relion_build/ /opt/relion/\
-  && chown relion:relion /opt/relion \
   && su relion \
+  && mkdir -p /opt/relion_build \
   && cd /opt/relion_build \
   && git clone  https://github.com/3dem/relion.git . \
   && sed -i '218,222d' CMakeLists.txt \
@@ -31,3 +23,10 @@ RUN apt-get update \
 USER relion
 WORKDIR /opt/relion
 
+FROM relion_base:latest
+RUN apt-get install -y \
+      libtiff5 \
+      libfftw3-double3 \
+  && apt-get clean
+USER relion
+COPY --from=builder /opt/relion/ .
