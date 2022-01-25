@@ -1,4 +1,5 @@
-FROM relion_base:latest AS builder
+FROM relion_base:gpu AS buildera
+ENV CUDA_BIN_PATH=/usr/local/cuda/bin
 RUN apt-get install -y \
        build-essential \
        cmake \

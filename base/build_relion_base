@@ -1,2 +1,0 @@
-#!/bin/bash
-docker build . -t relion_base 2>&1 | tee build_relion_base_image.log
