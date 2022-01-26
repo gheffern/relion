@@ -29,10 +29,20 @@ RUN cd /opt/relion_build/ \
   && make install
 USER relion
 
-FROM relion_base:gpu
-RUN apt-get install -y \
+FROM nvidia/cuda:11.6.0-runtime-ubuntu20.04
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+ && apt-get install -y \
+      mpi-default-bin \
+      libpng16-16 \
       libtiff5 \
       libfftw3-double3 \
-  && apt-get clean
+      libfftw3-3 \
+      vim \
+  && apt-get clean \
+  && useradd -ms /bin/bash relion \
+  && mkdir -p /opt/relion/\
+  && chown relion:relion /opt/relion
 USER relion
+WORKDIR /opt/relion
 COPY --from=builder /opt/relion/ .
