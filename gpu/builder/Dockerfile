@@ -46,7 +46,16 @@ RUN apt-get update \
   && apt-get clean \
   && useradd -ms /bin/bash relion \
   && mkdir -p /opt/relion/\
-  && chown relion:relion /opt/relion
+  && chown relion:relion /opt/relion \
+  && su relion \
+  && mkdir -p /opt/relion/data/
+
+COPY --from=builder /opt/relion/ /opt/relion/
+
 USER relion
-WORKDIR /opt/relion
-COPY --from=builder /opt/relion/ .
+WORKDIR /opt/relion/data
+VOLUME /opt/relion/data
+ENV PATH=$PATH:/opt/relion/bin \
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/relion/lib \
+    CUDA_HOME=/usr/local/cuda
+
