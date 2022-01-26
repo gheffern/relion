@@ -1,2 +1,3 @@
 #!/bin/bash
+export DOCKER_BUILDKIT=1
 docker build . -t relion_base:gpu 2>&1 | tee build_relion_base_image.log

@@ -1,8 +1,8 @@
-FROM nvidia/cuda:11.1-runtime-ubuntu20.04
-
+# syntax=docker/dockerfile:1.2
+FROM nvidia/cuda:11.6.0-devel-ubuntu20.04
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update \
+RUN --mount=type=cache,target=/var/cache/apt apt-get update \
   && apt-get install -y \
        mpi-default-bin \
        vim \
